@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import "./VeilMemeTokenV2.sol";
-import "./VeilLinearVesting.sol";
+import "../defi/VeilLinearVesting.sol";
 import "./VeilMemeV2Dex.sol";
 
 /// @notice Permissionless VEIL memecoin launchpad with bonding-curve discovery and V2 graduation.
