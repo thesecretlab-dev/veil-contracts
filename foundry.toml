@@ -6,6 +6,39 @@ solc = "0.8.24"
 optimizer = true
 optimizer_runs = 200
 
+# v1 companion rails only — see architecture/VEIL_STACK.md
+[profile.rails]
+src = "contracts"
+out = "out-rails"
+libs = ["lib"]
+solc = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+# Filename substring filters (this Foundry build skips by name, not glob path).
+skip = [
+    "VeilMeme",
+    "Mineral",
+    "TestCounter",
+    "Vat.sol",
+    "DaiJoin",
+    "GemJoin",
+    "Dog.sol",
+    "Jug.sol",
+    "Pot.sol",
+    "Spot.sol",
+    "Vow.sol",
+    "Clip.sol",
+    "NativeVeil",
+    "VeilOlympus",
+    "VeilUniV2",
+    "VeilTreasury",
+    "SvDAI",
+    "VeilLinearVesting",
+    "VeilKeep3r",
+    "VeilVAI",
+    "WsVEIL",
+]
+
 [profile.default.fmt]
 line_length = 120
 tab_width = 4

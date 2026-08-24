@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-/// @notice Minimal VAI token for companion EVM rails.
-/// @dev Owner sets minter (treasury); minter mints, holders can burn.
+/// @notice Parked ERC-20 VAI port. Not a v1 rail.
+/// @dev Native VAI mint/burn is VeilVM actions 9–10. Do not deploy this as protocol VAI.
 contract VeilVAI {
   string public constant name = "VEIL USD";
   string public constant symbol = "VAI";

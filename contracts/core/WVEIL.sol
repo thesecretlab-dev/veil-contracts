@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @notice Minimal WETH-style wrapper for the VEIL native token.
-/// @dev This is foundational for using VEIL as ERC-20 collateral (Maker-style vaults, AMMs, POL, etc.).
+/// @notice Minimal WETH-style wrapper for companion-native VEIL.
+/// @dev v1 rail only. Does not mint protocol VEIL; wrap/unwrap the companion gas token.
 contract WVEIL {
   string public constant name = "Wrapped VEIL";
   string public constant symbol = "wVEIL";

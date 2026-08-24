@@ -1,5 +1,6 @@
 # Compiler output
 out/
+out-rails/
 cache/
 
 # Dependencies

@@ -1,91 +1,42 @@
 # VEIL Contracts
 
-Smart contract suite for the VEIL protocol — privacy-native prediction markets on Avalanche.
+Companion **EVM rails** for VeilVM. This repo is not the protocol.
 
-## Architecture
+v1 layering: [`thesecretlab-dev/veil-docs` `architecture/VEIL_STACK.md`](https://github.com/thesecretlab-dev/veil-docs/blob/main/architecture/VEIL_STACK.md).
+
+Native VEIL, VAI, AMM, COL, fee router live in **veilvm** (actions 0–18). Do not deploy a second copy of those on the companion.
+
+## v1 rails (deploy)
 
 ```
-contracts/
-├── core/           Core token infrastructure
-│   ├── WVEIL.sol                  Wrapped VEIL (ERC-20)
-│   ├── WsVEIL.sol                 Wrapped staked VEIL (rebase wrapper)
-│   ├── VeilVAI.sol                VAI stablecoin (VEIL-native)
-│   ├── VeilOlympusRebaseToken.sol Rebase mechanics (Olympus-style)
-│   └── VeilFaucet.sol             Testnet faucet
-│
-├── defi/           DeFi primitives
-│   ├── VeilOlympusBondVault.sol   Bond vaults (discount VEIL via LP/DAI)
-│   ├── VeilUniV2Dex.sol           Native Uniswap V2 DEX
-│   ├── NativeVeilPool.sol         Liquidity pools
-│   ├── NativeVeilGauge.sol        Gauge voting & emission routing
-│   ├── SvDAI.sol                  Staked vault DAI
-│   ├── VeilTreasury.sol           Protocol treasury
-│   └── VeilLinearVesting.sol      Linear token vesting
-│
-├── bridge/         Cross-chain & intent infrastructure
-│   ├── VeilBridgeMinter.sol       Production bridge minter (HyperSDK ↔ EVM)
-│   ├── VeilLiquidityIntentGateway.sol  LP intent routing
-│   └── VeilOrderIntentGateway.sol      Order intent routing
-│
-├── keeper/         Automation
-│   └── VeilKeep3r.sol             Keeper network for automated operations
-│
-├── maker/          MakerDAO-style stability modules
-│   ├── Vat.sol                    Core accounting engine
-│   ├── DaiJoin.sol                DAI adapter
-│   ├── GemJoin.sol                Collateral adapter
-│   ├── Dog.sol                    Liquidation engine
-│   ├── Jug.sol                    Stability fee accumulator
-│   ├── Pot.sol                    DAI savings rate
-│   ├── Spot.sol                   Oracle price feed
-│   ├── Vow.sol                    System surplus/debt
-│   └── Clip.sol                   Dutch auction liquidator
-│
-├── identity/       Zero-knowledge identity
-│   └── ZeroIdVerifier.sol         ZER0ID Groth16 on-chain verifier
-│
-└── experimental/   R&D and community features
-    ├── VeilMemeLauncher.sol       Meme token launchpad
-    ├── VeilMemeToken.sol          Meme token standard
-    ├── VeilMemeTokenV2.sol        Meme token V2 (improved)
-    ├── VeilMemeV2Dex.sol          Meme-specific DEX
-    ├── VeilMinerals404.sol        ERC-404 mineral tokens
-    ├── MineralRarityTokens.sol    Rarity system
-    ├── Multicall3.sol             Batch call utility
-    └── TestCounter.sol            Test helper
+contracts/core/WVEIL.sol
+contracts/core/VeilFaucet.sol          # testnets only
+contracts/bridge/VeilBridgeMinter.sol
+contracts/bridge/VeilOrderIntentGateway.sol
+contracts/bridge/VeilLiquidityIntentGateway.sol
+contracts/identity/ZeroIdVerifier.sol
 ```
-
-## Key Concepts
-
-### Chain-Owned Liquidity (COL)
-Not "protocol-owned" — **chain-owned**. The L1 itself holds deep liquidity positions. Bond vaults sell discounted VEIL in exchange for LP tokens that the chain retains permanently.
-
-### Dual Stability System
-VAI stablecoin backed by MakerDAO-style modules (Vat/Jug/Spot/Dog) adapted for the VEIL ecosystem. Full liquidation engine with Dutch auctions.
-
-### Intent Architecture
-Bridge and order routing via intent gateways — users express *what* they want, the system figures out *how* across HyperSDK and companion EVM.
-
-### Rebase + Wrapping
-Olympus-style rebase token with wsVEIL wrapping for DeFi composability. Stakers earn rebase rewards; wsVEIL holders get a continuously appreciating wrapper.
-
-## Deployment
-
-Target chain: **VEIL L1** (Avalanche HyperSDK, ChainId `22207`) + **Companion EVM**
 
 ```bash
-# Install Foundry
-curl -L https://foundry.paradigm.xyz | bash
-foundryup
-
-# Build
+# PowerShell
+$env:FOUNDRY_PROFILE = "rails"
 forge build
+```
 
-# Test
-forge test
+Intent gateways are commit-only: events carry `commitment` and `nullifier`, not trader or amounts. Envelope bytes stay off-chain. Relayer is required.
 
-# Deploy (requires .env with PRIVATE_KEY and RPC_URL)
-forge script script/Deploy.s.sol --rpc-url $RPC_URL --broadcast
+Companion EVM `chainId` must not be `22207` (that is VeilVM’s HyperSDK app id).
+
+## Parked (git only, not v1)
+
+`core/VeilVAI`, `WsVEIL`, Olympus rebase/bonds, `defi/*` UniV2/treasury/gauges, `maker/*` DSS port, `keeper/*`, `experimental/*` meme/404.
+
+These stay for archaeology. They are not “VEIL on EVM.”
+
+## Build all (including parked)
+
+```bash
+forge build
 ```
 
 ## Related Repos
